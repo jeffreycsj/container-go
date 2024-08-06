@@ -62,9 +62,7 @@ func benchmarkCSkipList2(b *testing.B, cskiplist *cskiplist.ConcurrentSkipList) 
 }
 
 func BenchmarkMaps(b *testing.B) {
-	cskiplist := cskiplist.NewConcurrentSkipList(func(key1, key2 any) bool {
-		return key1.(int) < key2.(int)
-	})
+	cskiplist := cskiplist.NewConcurrentSkipList()
 
 	b.Run("ConcurrentSkipList1", func(b *testing.B) {
 		benchmarkCSkipList1(b, cskiplist)
