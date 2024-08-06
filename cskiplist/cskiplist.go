@@ -31,8 +31,23 @@ type ConcurrentSkipList struct {
 }
 
 // a concurrent safe skip list
-func NewConcurrentSkipList(compareFunc func(key1, key2 any) bool) *ConcurrentSkipList {
-	cskiplist := &ConcurrentSkipList{
+func NewConcurrentSkipList() *ConcurrentSkipList {
+	return &ConcurrentSkipList{
+		head: &node{
+			nexts: make([]*node, 1),
+		},
+		nodesCache: sync.Pool{
+			New: func() any {
+				return &node{}
+			},
+		},
+		compareFunc: defaultCompareFunc,
+	}
+}
+
+// a concurrent safe skip list with compare func
+func NewConcurrentSkipListWithCompareFunc(compareFunc func(key1, key2 any) bool) *ConcurrentSkipList {
+	return &ConcurrentSkipList{
 		head: &node{
 			nexts: make([]*node, 1),
 		},
@@ -43,12 +58,6 @@ func NewConcurrentSkipList(compareFunc func(key1, key2 any) bool) *ConcurrentSki
 		},
 		compareFunc: compareFunc,
 	}
-
-	if cskiplist.compareFunc == nil {
-		cskiplist.compareFunc = defaultCompareFunc
-	}
-
-	return cskiplist
 }
 
 func defaultCompareFunc(key1, key2 any) bool {
